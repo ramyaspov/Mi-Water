@@ -57,11 +57,16 @@ def render_package_sidebar():
 
 
 # importing data from usgs api
-url = "https://api.waterdata.usgs.gov/ogcapi/v0/collections/monitoring-locations/items?f=json&state_code=26&limit=50000"
+@st.cache_data
+def load_mi_sites():
+    url = "https://api.waterdata.usgs.gov/ogcapi/v0/collections/monitoring-locations/items?f=json&state_code=26&limit=50000"
+    response = requests.get(url)
+    response.raise_for_status()
+    api_sites = response.json()
+    return api_sites
 
-response = requests.get(url)
-response.raise_for_status()
-api_sites = response.json()
+# Load data
+api_sites = load_mi_sites()
 
 # printing the first 5
 for i, item in enumerate(api_sites.get('features', [])):

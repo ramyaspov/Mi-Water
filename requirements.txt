@@ -1,1 +1,8 @@
 streamlit
+hyswap
+pandas
+requests
+pydeck
+matplotlib
+geopandas
+dataretrieval
