@@ -1,5 +1,6 @@
 # packages
 import os
+import importlib.metadata
 import hyswap
 import streamlit as st
 import pandas as pd
@@ -8,6 +9,52 @@ import pydeck as pdk
 from dataretrieval import waterdata
 from matplotlib import pyplot as plt
 import geopandas as gpd
+
+
+def load_requirements(path):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            packages = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+        return packages
+    except FileNotFoundError:
+        return []
+
+
+def get_package_version(name):
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return None
+
+
+def format_package_list(names):
+    lines = []
+    for name in names:
+        version = get_package_version(name)
+        if version:
+            lines.append(f"- {name} ({version})")
+        else:
+            lines.append(f"- {name}")
+    return "\n".join(lines)
+
+
+def render_package_sidebar():
+    requirements = load_requirements(os.path.join(os.path.dirname(__file__), "requirements.txt"))
+    app_imports = ["hyswap", "streamlit", "pandas", "requests", "pydeck", "matplotlib", "geopandas", "dataretrieval"]
+    unique_packages = []
+    for pkg in requirements + app_imports:
+        if pkg not in unique_packages:
+            unique_packages.append(pkg)
+
+    with st.sidebar:
+        st.header("Packages")
+        if requirements:
+            st.subheader("Requirements")
+            st.markdown(format_package_list(requirements))
+
+        st.subheader("App imports")
+        st.markdown(format_package_list(app_imports))
+
 
 # importing data from usgs api
 url = "https://api.waterdata.usgs.gov/ogcapi/v0/collections/monitoring-locations/items?f=json&state_code=26&limit=50000"
@@ -110,12 +157,13 @@ logo_url = "https://i.imgur.com/p2pULZk.png"
 
 st.logo(logo_url, size="large", link=None, icon_image=None)
 
+# Set the page layout to wide mode for more space
+st.set_page_config(layout="wide")
+
 # Design front page
 st.title("MiWater: Michigan Water Dashboard")
 
-# Create two panels
-# Set the page layout to wide mode for more space
-st.set_page_config(layout="wide")
+render_package_sidebar()
 
 # Create two columns with unequal widths
 col1, col2 = st.columns([0.3, 0.7])
