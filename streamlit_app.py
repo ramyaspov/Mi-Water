@@ -418,3 +418,4 @@ with col3:
     logo_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqS5i0xO_7vRJoKEjz9ejSEwSjKOBvfOzT2Q&s"
     st.image(logo_url, width=200)
     st.write("Acknowledgments: Data from USGS")
+    st.write("Developed by: Ainsley Good and Ramya Subramanian")
