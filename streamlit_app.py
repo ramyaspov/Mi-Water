@@ -408,7 +408,16 @@ with tab3:
                 )
 
 st.write("Site Information Table")
-mi_sites
+display_data = mi_sites[['id', 'monitoring_location_number', 'monitoring_location_name', 'county_code', 'county_name', 'altitude', 'drainage_area',]].copy()
+display_data.rename(columns={'id' : 'Site ID',
+                             'monitoring_location_number' : 'Site Number',
+                             'monitoring_location_name' : 'Site Name',
+                             'county_code' : 'County Code',
+                             'county_name' : 'County Name',
+                             'altitude' : 'Altitude (ft)',
+                             'drainage_area' : 'Drainage Area (sq mi)'},
+                    inplace=True)
+display_data
 
 st.markdown("---")
 
